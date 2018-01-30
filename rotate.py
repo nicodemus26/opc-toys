@@ -27,4 +27,4 @@ while True:
     for x in colors:
         pixels = [ x ] * numLEDs
         client.put_pixels(pixels)
-        time.sleep(.001)
+        time.sleep(.01)
