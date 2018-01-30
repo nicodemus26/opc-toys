@@ -45,8 +45,8 @@ while True:
             b = b + pixels[j][2]*mul
         new_pixels[i] = max(4, min(255, r)), max(4, min(255, g)), max(4, min(255, b))
 
-    for x in range(num_leds/64):
-        if(random.randint(0,3) == 0):
+    for x in range(num_leds*2/64):
+        if(random.randint(0,6) == 0):
             # Add a new drop of color...
             drop_spot = random.randint(0, num_leds)
             drop_color = (random.randint(0, 256), random.randint(0, 256), random.randint(0, 256))
