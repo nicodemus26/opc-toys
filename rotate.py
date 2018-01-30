@@ -4,7 +4,7 @@
 
 import opc, time, random
 
-numLEDs = 128
+numLEDs = 256
 client = opc.Client('localhost:7890')
 
 colors = []

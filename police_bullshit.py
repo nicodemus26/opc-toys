@@ -4,7 +4,7 @@
 
 import opc, time, random
 
-num_leds = 128
+num_leds = 256
 client = opc.Client('localhost:7890')
 
 red = (255, 0, 0)

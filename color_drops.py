@@ -7,7 +7,7 @@ import opc, time, random
 num_leds = 256
 client = opc.Client('localhost:7890')
 
-color_run = [(-2, .05), (-2, .15), (-1, .25), (0, .38), (1, .1), (2, .03)]
+color_run = [(-2, .05), (-2, .15), (-1, .25), (0, .37), (1, .1), (2, .02)]
 drop_blur = [(0, .25), (1, .5), (2, .95), (3, .5), (4, .25)]
 
 # Add horizontal siblings to blur
@@ -43,7 +43,7 @@ while True:
             r = r + pixels[j][0]*mul
             g = g + pixels[j][1]*mul
             b = b + pixels[j][2]*mul
-        new_pixels[i] = max(4, min(255, r)), max(4, min(255, g)), max(4, min(255, b))
+        new_pixels[i] = max(2, min(255, r)), max(2, min(255, g)), max(2, min(255, b))
 
     for x in range(num_leds*2/64):
         if(random.randint(0,6) == 0):
