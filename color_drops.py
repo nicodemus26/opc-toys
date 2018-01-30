@@ -4,33 +4,59 @@
 
 import opc, time, random
 
-numLEDs = 128
+num_leds = 256
 client = opc.Client('localhost:7890')
 
-pixels = [ (0,0,0) ] * numLEDs
+color_run = [(-2, .05), (-2, .15), (-1, .25), (0, .38), (1, .1), (2, .03)]
+drop_blur = [(0, .25), (1, .5), (2, .95), (3, .5), (4, .25)]
+
+# Add horizontal siblings to blur
+scale = .8
+total = sum([mul for (_, mul) in color_run])
+spare = total*(1-scale)
+middle = [(off, mul*scale) for (off, mul) in color_run]
+left   = [(off-64, mul*spare/2) for (off, mul) in color_run]
+right  = [(off+64, mul*spare/2) for (off, mul) in color_run]
+color_run = left + middle + right
+total = sum([mul for (_, mul) in color_run])
+print("Run total: %f" % total)
+
+# Add horizontal drop splash
+scale = .8
+total = sum([mul for (_, mul) in drop_blur])
+spare = total*(1-scale)
+middle = [(off, mul*scale) for (off, mul) in drop_blur]
+left   = [(off-64, mul*spare/2) for (off, mul) in drop_blur]
+right  = [(off+64, mul*spare/2) for (off, mul) in drop_blur]
+drop_blur = left + middle + right
+total = sum([mul for (_, mul) in drop_blur])
+print("Drop total: %f" % total)
+
+pixels = [ (0,0,0) ] * num_leds
 while True:
     # Let the colors run
     new_pixels = list(pixels)
-    for i in range(numLEDs):
+    for i in range(num_leds):
         r, g, b = 0, 0, 0
-        for offset, mul in [(-2, .05), (-2, .15), (-1, .25), (0, .4), (1, .1), (2, .03)]:
-            j = (numLEDs+offset+i) % numLEDs
+        for offset, mul in color_run:
+            j = (num_leds+offset+i) % num_leds
             r = r + pixels[j][0]*mul
             g = g + pixels[j][1]*mul
             b = b + pixels[j][2]*mul
         new_pixels[i] = max(4, min(255, r)), max(4, min(255, g)), max(4, min(255, b))
 
-    if(random.randint(0,3) > 0):
-        # Add a new drop of color...
-        drop_spot = random.randint(0, numLEDs)
-        drop_color = (random.randint(0, 256), random.randint(0, 256), random.randint(0, 256))
-        for offset, mul in [(0, .25), (1, .5), (2, .75), (3, .5), (4, .25)]:
-            i = (offset + drop_spot) % numLEDs
-            color = []
-            for c in 0, 1, 2:
-                color.append(drop_color[c]*mul + new_pixels[i][c]*(1-mul))
-            new_pixels[i] = tuple(color)
+    for x in range(num_leds/64):
+        if(random.randint(0,3) == 0):
+            # Add a new drop of color...
+            drop_spot = random.randint(0, num_leds)
+            drop_color = (random.randint(0, 256), random.randint(0, 256), random.randint(0, 256))
+            for offset, mul in drop_blur:
+                i = (offset + drop_spot) % num_leds
+                color = []
+                for c in 0, 1, 2:
+                    color.append(drop_color[c]*mul + new_pixels[i][c]*(1-mul))
+                new_pixels[i] = tuple(color)
     pixels = new_pixels
     discretized= [(int(r), int(g), int(b)) for (r, g, b) in pixels]
     client.put_pixels(discretized)
-    time.sleep(1/10.)
+    time.sleep(.1)
