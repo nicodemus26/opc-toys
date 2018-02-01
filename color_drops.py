@@ -4,10 +4,10 @@
 
 import opc, time, random
 
-num_leds = 256
+num_leds = 512
 client = opc.Client('localhost:7890')
 
-color_run = [(-2, .05), (-2, .15), (-1, .25), (0, .37), (1, .1), (2, .02)]
+color_run = [(-2, .05), (-2, .15), (-1, .25), (0, .40), (1, .1), (2, .02)]
 drop_blur = [(0, .25), (1, .5), (2, .95), (3, .5), (4, .25)]
 
 # Add horizontal siblings to blur
@@ -57,6 +57,5 @@ while True:
                     color.append(drop_color[c]*mul + new_pixels[i][c]*(1-mul))
                 new_pixels[i] = tuple(color)
     pixels = new_pixels
-    discretized= [(int(r), int(g), int(b)) for (r, g, b) in pixels]
-    client.put_pixels(discretized)
-    time.sleep(.1)
+    client.put_pixels(pixels)
+    time.sleep(.2)
