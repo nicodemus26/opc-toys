@@ -41,7 +41,7 @@ while True:
         client.put_pixels(pixels)
         time.sleep(sleep_time)
 
-    # red/blue alternate per strip
+    # red/blue everything
     for x in range(cycles_per_pattern):
         pixels = []
         if int((float(x) / cycles_per_pattern)*8) %2 ==0:
@@ -57,16 +57,15 @@ while True:
         client.put_pixels(pixels)
         time.sleep(sleep_time)
 
-    # white blinks
+    # white blinks every other pixel
     for x in range(cycles_per_pattern/2):
         pixels = []
-        if x % 2 == 0:
-            while(len(pixels) < num_leds):
-                pixels = pixels + ([white]*16)
-                pixels = pixels + ([black]*16)
-        else:
-            while(len(pixels) < num_leds):
-                pixels = pixels + ([black]*16)
-                pixels = pixels + ([white]*16)
+        while(len(pixels) < num_leds):
+            if (len(pixels) / 64) % 2 == (x % 2):
+                pixels.append(white)
+                pixels.append(black)
+            else:
+                pixels.append(black)
+                pixels.append(white)
         client.put_pixels(pixels)
         time.sleep(sleep_time)
