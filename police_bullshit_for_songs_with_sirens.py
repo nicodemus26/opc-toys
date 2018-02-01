@@ -4,7 +4,7 @@
 
 import opc, time, random
 
-num_leds = 256
+num_leds = 512
 client = opc.Client('localhost:7890')
 
 red = (255, 0, 0)
@@ -20,8 +20,8 @@ while True:
         pixels = []
         if x % 2 == 0:
             while(len(pixels) < num_leds):
-                pixels = pixels + ([red]*64)
-                pixels = pixels + ([blue]*64)
+                pixels = pixels + ([red if x % 4 == 0 else blue]*16)
+                pixels = pixels + ([blue if x % 4 == 0 else red]*16)
         else:
             pixels = ([black]*num_leds)
         client.put_pixels(pixels)
